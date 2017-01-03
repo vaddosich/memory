@@ -1,5 +1,5 @@
 #ifndef _BENCHMARKS
-#include <set_bit_alloc.h>
+#include <allocator/fixed_size_zero_bit_strategy.h>
 #include <vector>
 #include <iostream>
 #include <thread>
@@ -11,15 +11,15 @@ int main()
     using std::chrono::duration_cast;
     const size_t min_node_size = 2;
     const size_t node_size = 40;
-    const size_t max = 64 * 64  * 64;
-    FixedSizeZeroBitStrategy<min_node_size , node_size, max> myalloc;
+    const size_t max = 64 * 64  * 66;
+    fixed_size_zero_bit_strategy<min_node_size , node_size, max> myalloc;
     volatile void * malloc_allocs[max];
     void * alloc_allocs[max];
     myalloc.clear();
 
     std::cout << "allocate size : " << max << std::endl;
 
-    std::string mas("massive of string");
+    std::string mas("massive of chars");
 
     auto start = Clock::now();
 
@@ -63,14 +63,6 @@ int main()
             alloc_allocs[k++] = v;
     }
 
-    for(size_t i = 0; i < 10; i++) {
-        myalloc.deallocate(alloc_allocs[i]);
-        vec.pop_back();
-    }
-
-    for(size_t i = 0; i < 10; i++) {
-        alloc_allocs[i] = myalloc.allocate(node_size);
-    }
     return 0;
 }
 
